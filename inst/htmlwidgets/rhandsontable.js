@@ -140,7 +140,7 @@ HTMLWidgets.widget({
       }
 
       if (HTMLWidgets.shinyMode) {
-        if (changes && (changes[0][2] !== null || changes[0][3] !== null)) {
+        if (changes && (changes.some(function(chg) {return chg[2] !== null || chg[3] !== null}))) {
           if (this.sortIndex && this.sortIndex.length !== 0) {
             c = [this.sortIndex[changes[0][0]][0], changes[0].slice(1, 1 + 3)];
           } else {
@@ -157,7 +157,7 @@ HTMLWidgets.widget({
             changes: { event: "afterChange", changes: c, source: source },
             params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
           });
-        } else if (source == "loadData" && this.params) {
+        } else if ((source === "loadData" || source === "updateData") && this.params) {
 
           if (this.params && this.params.debug) {
             if (this.params.debug > 0) {

@@ -178,3 +178,106 @@ genRowHeaders <- function(changes, rowHeaders) {
     rowHeaders[-inds]
   }
 }
+
+# Convert handsontable to R object
+toR_null_as_zero = function(data, changes, params, ...) {
+  rClass = params$rClass
+  colHeaders = unlist(params$rColHeaders)
+  rowHeaders = unlist(params$rRowHeaders)
+  rColClasses = unlist(params$rColClasses)[colHeaders]
+
+  out = data
+
+  # copy/paste may add rows without firing an afterCreateRow event (still needed?)
+  # if (length(out) != length(rowHeaders))
+  #   changes$event = "afterCreateRow"
+
+  # remove spare empty rows; autofill fix (not working)
+  # if (!is.null(changes$source) && changes$source == "autofill") {
+  #   rm_inds = sapply(out, function(x) all(unlist(x) == "NA"))
+  #   rm_inds = suppressWarnings(min(which(diff(rm_inds) == -1)))
+  #   if (rm_inds != Inf)
+  #     out = out[-(length(out) - rm_inds + 1)]
+  # }
+
+  # pre-conversion updates; afterCreateCol moved to end of function
+  # if (changes$event == "afterCreateRow") {
+  #   inds = seq(changes$ind + 1, length.out = changes$ct)
+  #   # prevent duplicates
+  #   nm = 1
+  #   while (nm %in% rowHeaders) {
+  #     nm = nm + 1
+  #   }
+  #   rowHeaders = c(head(rowHeaders, inds - 1), nm,
+  #                  tail(rowHeaders, length(rowHeaders) - inds + 1))
+  # } else if (changes$event == "afterRemoveRow") {
+  #   inds = seq(changes$ind + 1, length.out = changes$ct)
+  #   rowHeaders = rowHeaders[-inds]
+  if (changes$event == "afterRemoveCol") {
+    if (!("matrix" %in% rClass)) {
+      inds = seq(changes$ind + 1, 1, length.out = changes$ct)
+      rColClasses = rColClasses[-inds]
+    }
+  }
+
+  # convert
+  if ("matrix" %in% rClass) {
+    nr = length(out)
+    out = unlist(out, recursive = FALSE)
+    # replace NULL with NA
+    out = unlist(lapply(out, function(x) if (is.null(x)) NA else x))
+
+    # If there is no data create empty matrix
+    if (length(out) == 0) {
+      out = matrix(nrow = 0, ncol = length(colHeaders))
+    } else {
+      out = matrix(out, nrow = nr, byrow = TRUE)
+    }
+
+    class(out) = params$rColClasses
+
+  } else if ("data.frame" %in% rClass) {
+    nr = length(out)
+
+    out = unlist(out, recursive = FALSE)
+    # replace NULL with NA
+    out = unlist(lapply(out, function(x) if (is.null(x)) 0 else x))
+
+    # If there is no data create empty matrix
+    if (length(out) == 0) {
+      out = matrix(nrow = 0, ncol = length(colHeaders))
+    } else {
+      out = matrix(out, nrow = nr, byrow = TRUE)
+    }
+
+    out = colClasses(as.data.frame(out, stringsAsFactors = FALSE),
+                     rColClasses, params$columns, ...)
+  } else {
+    stop("Conversion not implemented: ", rClass)
+  }
+
+
+  # post-conversion updates
+  if (changes$event == "afterCreateRow") {
+    # default logical NA in data.frame to FALSE
+    if (!("matrix" %in% rClass)) {
+      inds_logical = which(rColClasses == "logical")
+      for (i in inds_logical)
+        out[[i]] = ifelse(is.na(out[[i]]), FALSE, out[[i]])
+    }
+  }
+
+  if (ncol(out) != length(colHeaders))
+    colHeaders = genColHeaders(changes, colHeaders)
+
+  if (nrow(out) != length(rowHeaders) && !is.null(rowHeaders))
+    rowHeaders = genRowHeaders(changes, rowHeaders)
+
+  colnames(out) = colHeaders
+  rownames(out) = rowHeaders
+
+  if ("data.table" %in% rClass)
+    out = as(out, "data.table")
+
+  out
+}

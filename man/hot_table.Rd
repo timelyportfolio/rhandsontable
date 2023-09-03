@@ -11,7 +11,7 @@ hot_table(
   customBorders = NULL,
   highlightRow = NULL,
   highlightCol = NULL,
-  enableComments = FALSE,
+  enableComments = NULL,
   overflow = NULL,
   rowHeaderWidth = NULL,
   ...

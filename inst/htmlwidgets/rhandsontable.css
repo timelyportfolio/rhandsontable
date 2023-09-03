@@ -6,9 +6,10 @@
   background-color: #F9F9FB;
 }
 
-.handsontable {
+.rhandsontable {
   overflow: auto;
 }
+
 
 /* fix for sparkline hover */
 .jqstooltip{

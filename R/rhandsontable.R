@@ -775,3 +775,15 @@ renderRHandsontable <- function(expr, env = parent.frame(), quoted = FALSE) {
 hot_to_r = function(...) {
   do.call(toR, ...)
 }
+
+#' Handsontable widget
+#'
+#' Convert handsontable data to R object. Can be used in a \code{shiny} app
+#'  to convert the input json to an R dataset.
+#'
+#' @param ... passed to \code{rhandsontable:::toR}
+#' @seealso \code{\link{rHandsontableOutput}}
+#' @export
+hot_to_r_null_as_zero = function(...) {
+  do.call(toR_null_as_zero, ...)
+}
