@@ -72,7 +72,10 @@ HTMLWidgets.widget({
       }
 
       instance.hot.params = x;
-      instance.hot.updateSettings(x);
+      // if we updateSettings with themeName theme does not work correctly
+      // misuse var so we can destructure in both places
+      var { themeName, ...everythingButTheme } = x;
+      instance.hot.updateSettings(everythingButTheme);
 
     } else {  // create new instance
       if (x.debug && x.debug > 0) {
@@ -90,7 +93,11 @@ HTMLWidgets.widget({
       }
 
       instance.hot.params = x;
-      instance.hot.updateSettings(x);
+      // update handsontable for callbacks
+      // if we updateSettings with themeName theme does not work correctly
+      // misuse var so we can destructure in both places
+      var { themeName, ...everythingButTheme } = x;
+      instance.hot.updateSettings(everythingButTheme);
 
       var searchField = document.getElementById('searchField');
       if (typeof(searchField) != 'undefined' && searchField != null) {
