@@ -185,7 +185,7 @@ HTMLWidgets.widget({
       }
 
     };
-
+/*
     x.afterFormulasValuesUpdate = function(changes, source) {
       // afterFormulasValuesUpdate returns every updated cell for every table
       //   so restrict to only changes for this table
@@ -224,7 +224,7 @@ HTMLWidgets.widget({
         }
       }
     }
-
+*/
     x.afterLoadData = function(firstTime) {
       if (this.params && this.params.debug) {
         if (this.params.debug > 0) {
