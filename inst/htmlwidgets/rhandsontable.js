@@ -88,8 +88,6 @@ HTMLWidgets.widget({
         console.log("rhandsontable: new table");
       }
 
-      instance.hot = new Handsontable(el, x);
-
       this.afterChangeCallback(x);
       this.afterCellMetaCallback(x);
       this.afterRowAndColChange(x);
@@ -98,7 +96,9 @@ HTMLWidgets.widget({
         this.afterSelectCallback(x);
       }
 
+      instance.hot = new Handsontable(el, x);
       instance.hot.params = x;
+
       // update handsontable for callbacks
       // if we updateSettings with themeName theme does not work correctly
       // misuse var so we can destructure in both places
@@ -162,10 +162,10 @@ HTMLWidgets.widget({
 
           if (this.params && this.params.debug) {
             if (this.params.debug > 0) {
-              console.log("afterChange: Shiny.onInputChange: " + this.rootElement.id);
+              console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
             }
           }
-          Shiny.onInputChange(this.rootElement.id, {
+          Shiny.onInputChange(this.rootContainer.id, {
             data: this.getData(),
             changes: { event: "afterChange", changes: c, source: source },
             params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -174,11 +174,11 @@ HTMLWidgets.widget({
 
           if (this.params && this.params.debug) {
             if (this.params.debug > 0) {
-              console.log("afterChange: Shiny.onInputChange: " + this.rootElement.id);
+              console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
             }
           }
           // push input change to shiny so input$hot and output$hot are in sync (see #137)
-          Shiny.onInputChange(this.rootElement.id, {
+          Shiny.onInputChange(this.rootContainer.id, {
             data: this.getData(),
             changes: { event: "afterChange", changes: null },
             params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -220,10 +220,10 @@ HTMLWidgets.widget({
       if (HTMLWidgets.shinyMode && key === "comment") {
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterSetCellMeta: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterSetCellMeta: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id + "_comment", {
+        Shiny.onInputChange(this.rootContainer.id + "_comment", {
           data: this.getData(),
           comment: { r: r + 1, c: c + 1, key: key, val: val},
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -245,10 +245,10 @@ HTMLWidgets.widget({
 
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterSelectionEnd: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterSelectionEnd: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id + "_select", {
+        Shiny.onInputChange(this.rootContainer.id + "_select", {
           data: this.getData(),
           select: { r: r + 1, c: c + 1, r2: r2 + 1, c2: c2 + 1},
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -272,10 +272,10 @@ HTMLWidgets.widget({
 
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterCreateRow: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterCreateRow: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id, {
+        Shiny.onInputChange(this.rootContainer.id, {
           data: this.getData(),
           changes: { event: "afterCreateRow", ind: ind, ct: ct },
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -288,10 +288,10 @@ HTMLWidgets.widget({
       if (HTMLWidgets.shinyMode)
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterRemoveRow: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterRemoveRow: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id, {
+        Shiny.onInputChange(this.rootContainer.id, {
           data: this.getData(),
           changes: { event: "afterRemoveRow", ind: ind, ct: ct },
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -303,10 +303,10 @@ HTMLWidgets.widget({
       if (HTMLWidgets.shinyMode)
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterCreateCol: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterCreateCol: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id, {
+        Shiny.onInputChange(this.rootContainer.id, {
           data: this.getData(),
           changes: { event: "afterCreateCol", ind: ind, ct: ct },
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
@@ -318,10 +318,10 @@ HTMLWidgets.widget({
       if (HTMLWidgets.shinyMode)
         if (this.params && this.params.debug) {
           if (this.params.debug > 0) {
-            console.log("afterRemoveCol: Shiny.onInputChange: " + this.rootElement.id);
+            console.log("afterRemoveCol: Shiny.onInputChange: " + this.rootContainer.id);
           }
         }
-        Shiny.onInputChange(this.rootElement.id, {
+        Shiny.onInputChange(this.rootContainer.id, {
           data: this.getData(),
           changes: { event: "afterRemoveCol", ind: ind, ct: ct },
           params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
