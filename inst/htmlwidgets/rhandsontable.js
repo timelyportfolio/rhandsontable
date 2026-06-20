@@ -74,13 +74,21 @@ HTMLWidgets.widget({
       instance.hot.params = x;
       // if we updateSettings with themeName theme does not work correctly
       // misuse var so we can destructure in both places
-      var { themeName, ...everythingButTheme } = x;
+      if(instance.hot.rootElement.querySelectorAll('.ht_master tr').length === 0) {
+        // workaround for what seems to be an error updating mergeCells
+        //   if table has not rendered in a visible element yet
+        var { themeName, mergeCells, ...everythingButTheme } = x;
+      } else {
+        var { themeName, ...everythingButTheme } = x;
+      }
       instance.hot.updateSettings(everythingButTheme);
 
     } else {  // create new instance
       if (x.debug && x.debug > 0) {
         console.log("rhandsontable: new table");
       }
+
+      instance.hot = new Handsontable(el, x);
 
       this.afterChangeCallback(x);
       this.afterCellMetaCallback(x);
@@ -90,14 +98,13 @@ HTMLWidgets.widget({
         this.afterSelectCallback(x);
       }
 
-      instance.hot = new Handsontable(el, x);
       instance.hot.params = x;
 
       // update handsontable for callbacks
       // if we updateSettings with themeName theme does not work correctly
       // misuse var so we can destructure in both places
-      var { themeName, ...everythingButTheme } = x;
-      //instance.hot.updateSettings(everythingButTheme);
+      var { themeName, mergeCells, ...everythingButTheme } = x;
+      instance.hot.updateSettings(everythingButTheme);
 
       var searchField = document.getElementById('searchField');
       if (typeof(searchField) != 'undefined' && searchField != null) {
@@ -165,7 +172,6 @@ HTMLWidgets.widget({
             params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
           });
         } else if ((source === "loadData" || source === "updateData") && this.params) {
-
           if (this.params && this.params.debug) {
             if (this.params.debug > 0) {
               console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
@@ -173,7 +179,8 @@ HTMLWidgets.widget({
           }
           // push input change to shiny so input$hot and output$hot are in sync (see #137)
           //   except if any cells have formulas and then do not send afterChange
-          //   and instead let afterFormulasValueUpdate handle
+          //   and instead let afterSetDataAtCell handle since
+          //   afterFormulasValueUpdate is so problematic
           if(!(this.getData().flat().some(d => /^=/.test(d)))) {
             Shiny.onInputChange(this.rootContainer.id, {
               data: this.getData(),
@@ -185,7 +192,29 @@ HTMLWidgets.widget({
       }
 
     };
+
+    // beginning in handsonable 16.0 loadData and updateData still contain formulas in data
+    //   and afterChange does not trigger when hyperformula formulas are calculated
+    //   so it appears afterSetDataAtCell and afterRender are the only hooks where data
+    //   is calculated values instead of the formula
+    // afterRender is triggered far more frequently for reasons other than formula calculation
+    //   while afterSetDataAtCell seems more precise to pick up formulat calculations
+    x.afterSetDataAtCell = function() {
+      if (this.params && this.params.debug) {
+        if (this.params.debug > 0) {
+          console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
+        }
+      }
+      // push input change to shiny so input$hot and output$hot are in sync with calculated formulas as values
+      Shiny.onInputChange(this.rootContainer.id, {
+        data: this.getData(),
+        changes: { event: "afterChange", changes: null },
+        params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
+      });
+    };
 /*
+    // afterFormulaValuesUpdate seems like the correct way to get calculated formulas as values
+    //   but this is triggered for every table for every formula
     x.afterFormulasValuesUpdate = function(changes, source) {
       // afterFormulasValuesUpdate returns every updated cell for every table
       //   so restrict to only changes for this table
@@ -225,6 +254,7 @@ HTMLWidgets.widget({
       }
     }
 */
+
     x.afterLoadData = function(firstTime) {
       if (this.params && this.params.debug) {
         if (this.params.debug > 0) {
