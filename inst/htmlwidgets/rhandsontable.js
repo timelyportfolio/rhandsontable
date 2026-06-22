@@ -199,17 +199,19 @@ HTMLWidgets.widget({
     // afterRender is triggered far more frequently for reasons other than formula calculation
     //   while afterSetDataAtCell seems more precise to pick up formulat calculations
     x.afterSetDataAtCell = function() {
-      if (this.params && this.params.debug) {
-        if (this.params.debug > 0) {
-          console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
+      if (HTMLWidgets.shinyMode) {
+        if (this.params && this.params.debug) {
+          if (this.params.debug > 0) {
+            console.log("afterChange: Shiny.onInputChange: " + this.rootContainer.id);
+          }
         }
+        // push input change to shiny so input$hot and output$hot are in sync with calculated formulas as values
+        Shiny.onInputChange(this.rootContainer.id, {
+          data: this.getData(),
+          changes: { event: "afterChange", changes: null },
+          params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
+        });
       }
-      // push input change to shiny so input$hot and output$hot are in sync with calculated formulas as values
-      Shiny.onInputChange(this.rootContainer.id, {
-        data: this.getData(),
-        changes: { event: "afterChange", changes: null },
-        params: Object.assign({}, this.params, {formulas: undefined}) // remove formulas to prevent circular
-      });
     };
 /*
     // afterFormulaValuesUpdate seems like the correct way to get calculated formulas as values

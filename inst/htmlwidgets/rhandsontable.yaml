@@ -4,7 +4,7 @@ dependencies:
    version: 16.0.1
    src: "htmlwidgets/lib/handsontable"
    script: [handsontable.full.min.js, de-DE.js, de-CH.js]
-   stylesheet: [handsontable.full.min.css, ht-theme-horizon.min.css, ht-theme-main.min.css]
+   stylesheet: [handsontable.min.css, ht-theme-horizon.min.css, ht-theme-main.min.css]
  - name: numbro.languages
    version: 2.5.0
    src: "htmlwidgets/lib/numbro"
