@@ -1,13 +1,15 @@
-#' rhandsontable
-#'
+#' @keywords internal
+"_PACKAGE"
+
 #' R interface for creating tables using Handsontable, url{http://http://handsontable.com/}
 #'
 #' For full documentation on the package, visit \url{http://jrowen.github.io/rhandsontable/}
 #' @name rhandsontable-package
-#' @docType package
+## usethis namespace: start
 #' @import htmlwidgets jsonlite
 #' @importFrom utils modifyList capture.output head tail
 #' @importFrom methods as
+## usethis namespace: end
 NULL
 
 #' rhandsontable exported operators

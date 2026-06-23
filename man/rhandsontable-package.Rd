@@ -3,11 +3,10 @@
 \docType{package}
 \name{rhandsontable-package}
 \alias{rhandsontable-package}
-\title{rhandsontable}
+\title{rhandsontable: Interface to the 'Handsontable.js' Library}
 \description{
-R interface for creating tables using Handsontable, url{http://http://handsontable.com/}
-}
-\details{
+An R interface to the 'Handsontable' JavaScript library, which is a minimalist Excel-like data grid editor. See \url{https://handsontable.com/} for details.
+
 For full documentation on the package, visit \url{http://jrowen.github.io/rhandsontable/}
 }
 \seealso{
@@ -44,3 +43,4 @@ Other contributors:
 }
 
 }
+\keyword{internal}
