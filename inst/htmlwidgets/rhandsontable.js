@@ -77,9 +77,9 @@ HTMLWidgets.widget({
       if(instance.hot.rootElement.querySelectorAll('.ht_master tr').length === 0) {
         // workaround for what seems to be an error updating mergeCells
         //   if table has not rendered in a visible element yet
-        var { themeName, mergeCells, ...everythingButTheme } = x;
+        var { themeName, mergeCells, renderAllColumns, renderAllRows, ...everythingButTheme } = x;
       } else {
-        var { themeName, ...everythingButTheme } = x;
+        var { themeName, renderAllColumns, renderAllRows, ...everythingButTheme } = x;
       }
       instance.hot.updateSettings(everythingButTheme);
 
@@ -102,7 +102,7 @@ HTMLWidgets.widget({
       // update handsontable for callbacks
       // if we updateSettings with themeName theme does not work correctly
       // misuse var so we can destructure in both places
-      var { themeName, mergeCells, ...everythingButTheme } = x;
+      var { themeName, mergeCells, renderAllColumns, renderAllRows, ...everythingButTheme } = x;
       instance.hot.updateSettings(everythingButTheme);
 
       var searchField = document.getElementById('searchField');
