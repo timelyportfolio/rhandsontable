@@ -94,10 +94,10 @@ rhandsontable <- function(data, colHeaders, rowHeaders,
         )
       } else if (type == "numeric") {
         res = list(type = "numeric",
-                   numericFormat = list(pattern = "0.00"))
+                   numericFormat = list(minimumFractionDigits = 2, maximumFractionDigits = 2))
       } else if (type == "integer") {
         res = list(type = "numeric",
-                   numericFormat = list(pattern = "0"))
+                   numericFormat = list(minimumFractionDigits = 0, maximumFractionDigits = 0))
       } else if (type == "date") {
         res = list(type = "date",
                    correctFormat = TRUE,
