@@ -443,9 +443,9 @@ hot_col = function(hot, col, type = NULL, format = NULL, source = NULL,
     if (!is.null(copyable)) cols[[i]]$copyable = copyable
     if (!is.null(default)) cols[[i]]$default = default
 
-    if (!is.null(format) || !is.null(language)) cols[[i]]$numericFormat = list()
-    if (!is.null(format)) cols[[i]]$numericFormat$pattern = format
-    if (!is.null(language)) cols[[i]]$numericFormat$culture = language
+    # if (!is.null(format) || !is.null(language)) cols[[i]]$numericFormat = list()
+    if (!is.null(format)) cols[[i]]$numericFormat = format
+    if (!is.null(language)) cols[[i]]$locale = language
 
     if (!is.null(validator)) cols[[i]]$validator = JS(validator)
     if (!is.null(allowInvalid)) cols[[i]]$allowInvalid = allowInvalid

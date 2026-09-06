@@ -1,7 +1,7 @@
 # (uncomment to add a dependency)
 dependencies:
  - name: handsontable
-   version: 17.1.0
+   version: 18.1.0
    src: "htmlwidgets/lib/handsontable"
    script: [handsontable.full.min.js, de-DE.js, de-CH.js]
    stylesheet: [handsontable.min.css, ht-theme-horizon.min.css, ht-theme-main.min.css]
